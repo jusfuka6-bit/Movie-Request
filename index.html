@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request</title>
+    <title>Movie Request</title>
     <style>
-        /* টেক্সট সিলেকশন বন্ধ */
         * {
             box-sizing: border-box;
             -webkit-user-select: none;
@@ -49,9 +48,7 @@
             color: #5f6368;
         }
 
-        input[type="text"], 
-        input[type="email"],
-        textarea {
+        input[type="text"], textarea {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #e0e0e0;
@@ -82,18 +79,13 @@
             transition: transform 0.2s, background-color 0.2s;
         }
 
-        .submit-btn:active {
-            transform: scale(0.96);
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
 
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #01579b;
-            font-size: 14px;
-            font-weight: 500;
+        .submit-btn:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -102,28 +94,83 @@
 <div class="container">
     <h2>Movie Request</h2>
     
-    <form action="https://formspree.io/f/xeevayrb" method="POST">
-        
+    <form id="movieForm">
         <div class="form-group">
             <label>Your Name</label>
-            <input type="text" name="User Name" placeholder="আপনার নাম লিখুন" required>
+            <input type="text" name="User Name" id="userName" placeholder="আপনার নাম লিখুন" required>
         </div>
 
         <div class="form-group">
             <label>Movie Name</label>
-            <input type="text" name="Movie Name" placeholder="মুভির নাম ও বছর লিখুন" required>
+            <input type="text" name="Movie Name" id="movieName" placeholder="মুভির নাম ও বছর লিখুন" required>
         </div>
 
         <div class="form-group">
             <label>Other information</label>
-            <textarea name="Message" rows="4" placeholder="মুভিটি সম্পর্কে কিছু বলতে চাইলে লিখুন..."></textarea>
+            <textarea name="Message" id="message" rows="4" placeholder="মুভিটি সম্পর্কে কিছু বলতে চাইলে লিখুন..."></textarea>
         </div>
 
-        <input type="hidden" name="_subject" value="নতুন মুভি রিকোয়েস্ট এসেছে!">
-
-        <button type="submit" class="submit-btn">Submit</button>
+        <button type="submit" id="submitBtn" class="submit-btn">Submit</button>
     </form>
 </div>
+
+<script>
+    const form = document.getElementById('movieForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // আপনার দুটি লিঙ্ক এখানে দেওয়া আছে
+    const primaryLink = "https://formspree.io/f/xeevayrb";
+    const fallbackLink = "https://formspree.io/f/mlgajqoz";
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Sending...";
+
+        const formData = new FormData(form);
+        formData.append("_subject", "নতুন মুভি রিকোয়েস্ট এসেছে!");
+
+        // প্রথম লিঙ্কে পাঠানোর চেষ্টা
+        try {
+            const response = await fetch(primaryLink, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                alert("ধন্যবাদ! আপনার রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে।");
+                form.reset();
+            } else {
+                // যদি প্রথম লিঙ্ক কাজ না করে (লিমিট শেষ হয়), তবে দ্বিতীয় লিঙ্কে পাঠানো
+                throw new Error('Primary link failed');
+            }
+        } catch (error) {
+            console.log("Switching to backup link...");
+            
+            try {
+                const secondResponse = await fetch(fallbackLink, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (secondResponse.ok) {
+                    alert("ধন্যবাদ! আপনার রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে।");
+                    form.reset();
+                } else {
+                    alert("দুঃখিত, বর্তমানে আমাদের সার্ভার পূর্ণ। দয়া করে পরে চেষ্টা করুন।");
+                }
+            } catch (err) {
+                alert("ইন্টারনেট সংযোগ চেক করুন এবং আবার চেষ্টা করুন।");
+            }
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+        }
+    });
+</script>
 
 </body>
 </html>
