@@ -87,6 +87,35 @@
         .submit-btn:active {
             transform: scale(0.96);
         }
+
+        /* Toast CSS */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @-webkit-keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body>
@@ -114,13 +143,23 @@
     </form>
 </div>
 
+<div id="toast"></div>
+
 <script>
     const form = document.getElementById('movieForm');
     const submitBtn = document.getElementById('submitBtn');
+    const toast = document.getElementById('toast');
 
-    // আপনার দুটি লিঙ্ক এখানে দেওয়া আছে
     const primaryLink = "https://formspree.io/f/xeevayrb";
     const fallbackLink = "https://formspree.io/f/mlgajqoz";
+
+    // Toast Function
+    function showToast(message, bgColor = "#333") {
+        toast.innerText = message;
+        toast.style.backgroundColor = bgColor;
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -131,7 +170,6 @@
         const formData = new FormData(form);
         formData.append("_subject", "নতুন মুভি রিকোয়েস্ট এসেছে!");
 
-        // প্রথম লিঙ্কে পাঠানোর চেষ্টা
         try {
             const response = await fetch(primaryLink, {
                 method: 'POST',
@@ -140,15 +178,12 @@
             });
 
             if (response.ok) {
-                alert("ধন্যবাদ! আপনার রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে।");
+                showToast("Request Successful", "#2e7d32"); // Green for success
                 form.reset();
             } else {
-                // যদি প্রথম লিঙ্ক কাজ না করে (লিমিট শেষ হয়), তবে দ্বিতীয় লিঙ্কে পাঠানো
-                throw new Error('Primary link failed');
+                throw new Error('Primary failed');
             }
         } catch (error) {
-            console.log("Switching to backup link...");
-            
             try {
                 const secondResponse = await fetch(fallbackLink, {
                     method: 'POST',
@@ -157,13 +192,13 @@
                 });
 
                 if (secondResponse.ok) {
-                    alert("ধন্যবাদ! আপনার রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে।");
+                    showToast("Request Successful", "#2e7d32");
                     form.reset();
                 } else {
-                    alert("দুঃখিত, বর্তমানে আমাদের সার্ভার পূর্ণ। দয়া করে পরে চেষ্টা করুন।");
+                    showToast("Server is full, try again later.", "#c62828"); // Red for error
                 }
             } catch (err) {
-                alert("ইন্টারনেট সংযোগ চেক করুন এবং আবার চেষ্টা করুন।");
+                showToast("Check internet connection.", "#c62828");
             }
         } finally {
             submitBtn.disabled = false;
