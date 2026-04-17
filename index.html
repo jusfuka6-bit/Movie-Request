@@ -5,86 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request a Movie - Movie BD</title>
     <style>
+        /* টেক্সট সিলেকশন বন্ধ */
         * {
             box-sizing: border-box;
             -webkit-user-select: none;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             color: #202124;
         }
 
         .container {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 450px;
+            margin: 40px auto;
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         h2 {
             text-align: center;
             color: #01579b;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             font-weight: 500;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 14px;
+            color: #5f6368;
         }
 
         input[type="text"], 
-        input[type="file"],
+        input[type="email"],
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            font-size: 15px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #f1f3f4;
             outline: none;
+            transition: 0.3s;
         }
 
-        input:focus {
+        input:focus, textarea:focus {
             border-color: #01579b;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(1, 87, 155, 0.1);
         }
 
         .submit-btn {
             background-color: #01579b;
             color: white;
             border: none;
-            padding: 14px;
+            padding: 15px;
             width: 100%;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             margin-top: 10px;
-            transition: 0.3s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
         .submit-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             text-decoration: none;
-            color: #5f6368;
+            color: #01579b;
             font-size: 14px;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -93,33 +102,29 @@
 <div class="container">
     <h2>Movie Request</h2>
     
-    <form action="https://formspree.io/f/xeevayrb" method="POST" enctype="multipart/form-data">
+    <form action="https://formspree.io/f/YOUR_ID_HERE" method="POST">
         
         <div class="form-group">
-            <label>আপনার নাম (User Name)</label>
-            <input type="text" name="name" placeholder="আপনার নাম লিখুন" required>
+            <label>আপনার নাম</label>
+            <input type="text" name="User_Name" placeholder="আপনার নাম লিখুন" required>
         </div>
 
         <div class="form-group">
-            <label>মুভির নাম (Movie Name)</label>
-            <input type="text" name="movie_name" placeholder="মুভির নাম ও বছর লিখুন" required>
+            <label>মুভির নাম</label>
+            <input type="text" name="Movie_Name" placeholder="মুভির নাম ও বছর লিখুন" required>
         </div>
 
         <div class="form-group">
-            <label>স্ক্রিনশট (Screenshot)</label>
-            <input type="file" name="upload" accept="image/*">
-            <small style="color: #888;">*যদি প্রয়োজন হয় মুভির পোস্টার দিন</small>
+            <label>অন্য কোনো তথ্য (ঐচ্ছিক)</label>
+            <textarea name="Message" rows="4" placeholder="মুভিটি সম্পর্কে কিছু বলতে চাইলে লিখুন..."></textarea>
         </div>
 
-        <div class="form-group">
-            <label>অতিরিক্ত বার্তা (Message)</label>
-            <textarea name="message" rows="3" placeholder="অন্য কিছু বলতে চাইলে এখানে লিখুন..."></textarea>
-        </div>
+        <input type="hidden" name="_subject" value="নতুন মুভি রিকোয়েস্ট এসেছে!">
 
         <button type="submit" class="submit-btn">রিকোয়েস্ট পাঠান</button>
     </form>
 
-    <a href="index.html" class="back-link">← ব্যাগে যান</a>
+    <a href="index.html" class="back-link">← হোম পেজে ফিরে যান</a>
 </div>
 
 </body>
